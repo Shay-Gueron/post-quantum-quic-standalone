@@ -1,0 +1,599 @@
+--- openssl-clean/openssl-3.6.0-beta1/crypto/ct/ct_sct.c	2025-09-16 12:18:18.000000000 +0000
++++ /root/post-quantum-quick-standalone/openssl-openssl-3.6.0-beta1/crypto/ct/ct_sct.c	2026-05-19 10:19:24.135369547 +0000
+@@ -218,6 +218,19 @@
+                 return NID_undef;
+             }
+         }
++        // ============== EDITED ==============
++        if (sct->hash_alg == 9) {
++            switch (sct->sig_alg) {
++            case 4:
++                return NID_ML_DSA_44;
++            case 5:
++                return NID_ML_DSA_65;
++            case 6:
++                return NID_ML_DSA_87;
++            default:
++                return NID_undef;
++            }
++        }
+     }
+     return NID_undef;
+ }
+--- openssl-clean/openssl-3.6.0-beta1/crypto/ct/ct_sct_ctx.c	2025-09-16 12:18:18.000000000 +0000
++++ /root/post-quantum-quick-standalone/openssl-openssl-3.6.0-beta1/crypto/ct/ct_sct_ctx.c	2026-05-19 10:19:24.135369547 +0000
+@@ -207,8 +207,11 @@
+     unsigned int md_len;
+     EVP_MD *sha256 = EVP_MD_fetch(sctx->libctx, "SHA2-256", sctx->propq);
+ 
+-    if (sha256 == NULL)
++    if (sha256 == NULL) {
++        // ============ EDITED ==========
++        printf("Did not find sha256 at ct_public_key_hash");
+         goto err;
++    }
+ 
+     /* Reuse buffer if possible */
+     if (*hash != NULL && *hash_len >= SHA256_DIGEST_LENGTH) {
+--- openssl-clean/openssl-3.6.0-beta1/crypto/ct/ct_vfy.c	2025-09-16 12:18:18.000000000 +0000
++++ /root/post-quantum-quick-standalone/openssl-openssl-3.6.0-beta1/crypto/ct/ct_vfy.c	2026-05-19 10:19:24.135369547 +0000
+@@ -55,6 +55,7 @@
+     l2n8(sct->timestamp, p);
+     s2n(sct->entry_type, p);
+ 
++    // printf("Calling EVP_DigestUpdate\n");
+     if (!EVP_DigestUpdate(ctx, tmpbuf, p - tmpbuf))
+         return 0;
+ 
+@@ -122,14 +123,39 @@
+     if (ctx == NULL)
+         goto end;
+ 
+-    if (!EVP_DigestVerifyInit_ex(ctx, NULL, "SHA2-256", sctx->libctx,
+-                                 sctx->propq, sctx->pkey, NULL))
++    // ========= EDITED =========
++    // printf("sct->hash_alg: %d\n", sct->hash_alg);
++    // printf("sct->sig_alg: %d\n", sct->sig_alg);
++    if (sct->hash_alg == 4) {
++        if (!EVP_DigestVerifyInit_ex(ctx, NULL, "SHA2-256", sctx->libctx,
++                                     sctx->propq, sctx->pkey, NULL))
++            goto end;
++    } else if (sct->hash_alg == 2) {
++        if (!EVP_DigestVerifyInit_ex(ctx, NULL, "SHA1", sctx->libctx,
++                                     sctx->propq, sctx->pkey, NULL))
++            goto end;
++    } else if (sct->hash_alg == 9 && (sct->sig_alg == 4 || sct->sig_alg == 5 || sct->sig_alg == 6)) { // If mldsa - don't set hash, it deafults to SHAKE256
++        if (!EVP_DigestVerifyInit_ex(ctx, NULL, NULL, sctx->libctx,
++                                     sctx->propq, sctx->pkey, NULL))
++            goto end;
++    } else {
++        ERR_raise(ERR_LIB_CT, CT_R_SCT_INVALID_SIGNATURE);
+         goto end;
++    }
++    // if (!EVP_DigestVerifyInit_ex(ctx, NULL, "SHA2-256", sctx->libctx,
++    //                              sctx->propq, sctx->pkey, NULL))
++    //     goto end;
+ 
+     if (!sct_ctx_update(ctx, sctx, sct))
+         goto end;
+ 
+     /* Verify signature */
++    // printf("Calling EVP_DigestVerifyFinal with sig_len: %zu\n", sct->sig_len);
++    // printf("sig: ");
++    // for (size_t i = 0; i < sct->sig_len; i++)
++        // printf("%02x", sct->sig[i]);
++    // printf("\n");
++
+     ret = EVP_DigestVerifyFinal(ctx, sct->sig, sct->sig_len);
+     /* If ret < 0 some other error: fall through without setting error */
+     if (ret == 0)
+--- openssl-clean/openssl-3.6.0-beta1/crypto/ml_dsa/ml_dsa_sign.c	2025-09-16 12:18:18.000000000 +0000
++++ /root/post-quantum-quick-standalone/openssl-openssl-3.6.0-beta1/crypto/ml_dsa/ml_dsa_sign.c	2026-05-19 10:19:24.799374267 +0000
+@@ -422,6 +422,11 @@
+                      const uint8_t *rand, size_t rand_len, int encode,
+                      unsigned char *sig, size_t *sig_len, size_t sig_size)
+ {
++    // ========== EDITED =========
++    // printf("In ossl_ml_dsa_sign\n");
++    // printf("msg size: %zu, context size: %zu, rand size: %zu, encode: %d\n",
++        //    msg_len, context_len, rand_len, encode);
++    // ==========================
+     EVP_MD_CTX *md_ctx = NULL;
+     uint8_t mu[ML_DSA_MU_BYTES];
+     const uint8_t *mu_ptr = mu;
+@@ -441,6 +446,7 @@
+         return 0;
+ 
+     if (msg_is_mu) {
++        // printf("msg_is_mu\n");
+         mu_ptr = msg;
+         mu_len = msg_len;
+     } else {
+@@ -451,11 +457,21 @@
+         if (!ossl_ml_dsa_mu_update(md_ctx, msg, msg_len))
+             goto err;
+ 
++        // printf("Finalizing mu computation\n");
+         if (!ossl_ml_dsa_mu_finalize(md_ctx, mu, mu_len))
+             goto err;
+     }
++    
++    //for (size_t i = 0; i < sizeof(mu); i++) {
++    //    printf("%02x", mu[i]);
++    //}
++    //printf("\n");
+ 
+     ret = ml_dsa_sign_internal(priv, mu_ptr, mu_len, rand, rand_len, sig);
++    //printf("sig: ");
++    //for (size_t i = 0; i < *sig_len; i++)
++    //    printf("%02x", sig[i]);
++    //printf("\n");
+ 
+ err:
+     EVP_MD_CTX_free(md_ctx);
+@@ -494,6 +510,11 @@
+         if (!ossl_ml_dsa_mu_finalize(md_ctx, mu, mu_len))
+             goto err;
+     }
++    
++    //printf("sig: ");
++    //for (size_t i = 0; i < sig_len; i++)
++    //    printf("%02x", sig[i]);
++    //printf("\n");
+ 
+     ret = ml_dsa_verify_internal(pub, mu_ptr, mu_len, sig, sig_len);
+ err:
+--- openssl-clean/openssl-3.6.0-beta1/demos/guide/Makefile	2025-09-16 12:18:18.000000000 +0000
++++ /root/post-quantum-quick-standalone/openssl-openssl-3.6.0-beta1/demos/guide/Makefile	2026-05-19 10:19:25.727380865 +0000
+@@ -13,9 +13,10 @@
+         quic-server-non-block \
+         quic-client-non-block
+ 
+-CFLAGS  = -I../../include -g -Wall
+-LDFLAGS = -L../..
+-LDLIBS  = -lcrypto -lssl
++OPENSSL_DIR=$(realpath ../..)
++CFLAGS  = -I$(OPENSSL_DIR)/include -g -Wall
++LDFLAGS = -L$(OPENSSL_DIR)
++LDLIBS  = -lcrypto -lssl -Wl,-rpath,$(OPENSSL_DIR),--disable-new-dtags
+ 
+ all: $(TESTS) chain
+ 
+--- openssl-clean/openssl-3.6.0-beta1/demos/guide/tls-server-block.c	2025-09-16 12:18:18.000000000 +0000
++++ /root/post-quantum-quick-standalone/openssl-openssl-3.6.0-beta1/demos/guide/tls-server-block.c	2026-05-19 10:19:25.731380894 +0000
+@@ -22,6 +22,7 @@
+ # include <err.h>
+ # include <sys/socket.h>
+ # include <sys/select.h>
++# include <signal.h>
+ #endif
+ 
+ #include <openssl/bio.h>
+@@ -62,19 +63,32 @@
+ /* Minimal TLS echo server. */
+ int main(int argc, char *argv[])
+ {
++    // IMPORTANT EDIT - ignore SIGPIPE or we get killed
++    // I assume we get this signal because the timing client shuts down the connection super fast
++    signal(SIGPIPE, SIG_IGN);
++    
+     int res = EXIT_FAILURE;
+     long opts;
+     const char *hostport;
+     SSL_CTX *ctx = NULL;
+     BIO *acceptor_bio;
++    const char *chain_path = NULL;
++    const char *key_path = NULL;
++    char use_session_cache = 0;
++    const char *kex_group = NULL;
+ 
+ #ifdef _WIN32
+     progname = argv[0];
+ #endif
+ 
+-    if (argc != 2)
+-        errx(res, "Usage: %s [host:]port", argv[0]);
++    if (argc < 3)
++        errx(res, "Usage: %s [host:]port <chain.pem> <server.key> [group] ", argv[0]);
+     hostport = argv[1];
++    chain_path = argv[2];
++    key_path = argv[3];
++    if (argc >= 4){
++        kex_group = argv[4];
++    } 
+ 
+     /*
+      * An SSL_CTX holds shared configuration information for multiple
+@@ -150,7 +164,8 @@
+      * "make chain" in this directory.  If the server will be executed from some
+      * other directory, move or copy the files there.
+      */
+-    if (SSL_CTX_use_certificate_chain_file(ctx, "chain.pem") <= 0) {
++
++    if (SSL_CTX_use_certificate_chain_file(ctx, chain_path) <= 0) {
+         SSL_CTX_free(ctx);
+         ERR_print_errors_fp(stderr);
+         errx(res, "Failed to load the server certificate chain file");
+@@ -162,36 +177,44 @@
+      * whether the certificate chain is valid, the certificates could be
+      * expired, or may otherwise fail to form a chain that a client can validate.
+      */
+-    if (SSL_CTX_use_PrivateKey_file(ctx, "pkey.pem", SSL_FILETYPE_PEM) <= 0) {
++    if (SSL_CTX_use_PrivateKey_file(ctx, key_path, SSL_FILETYPE_PEM) <= 0) {
+         SSL_CTX_free(ctx);
+         ERR_print_errors_fp(stderr);
+         errx(res, "Error loading the server private key file, "
+                   "possible key/cert mismatch???");
+     }
+ 
+-    /*
+-     * Servers that want to enable session resumption must specify a cache id
+-     * byte array, that identifies the server application, and reduces the
+-     * chance of inappropriate cache sharing.
+-     */
+-    SSL_CTX_set_session_id_context(ctx, (void *)cache_id, sizeof(cache_id));
+-    SSL_CTX_set_session_cache_mode(ctx, SSL_SESS_CACHE_SERVER);
+-
+-    /*
+-     * How many client TLS sessions to cache.  The default is
+-     * SSL_SESSION_CACHE_MAX_SIZE_DEFAULT (20k in recent OpenSSL versions),
+-     * which may be too small or too large.
+-     */
+-    SSL_CTX_sess_set_cache_size(ctx, 1024);
++    if (!SSL_CTX_check_private_key(ctx)) {
++        SSL_CTX_free(ctx);
++        errx(res, "private key check failed");
++    }
+ 
+-    /*
+-     * Sessions older than this are considered a cache miss even if still in
+-     * the cache.  The default is two hours.  Busy servers whose clients make
+-     * many connections in a short burst may want a shorter timeout, on lightly
+-     * loaded servers with sporadic connections from any given client, a longer
+-     * time may be appropriate.
+-     */
+-    SSL_CTX_set_timeout(ctx, 3600);
++    
++    if (use_session_cache){
++        /*
++         * Servers that want to enable session resumption must specify a cache id
++         * byte array, that identifies the server application, and reduces the
++         * chance of inappropriate cache sharing.
++         */
++        SSL_CTX_set_session_id_context(ctx, (void *)cache_id, sizeof(cache_id));
++        SSL_CTX_set_session_cache_mode(ctx, SSL_SESS_CACHE_SERVER);
++    
++        /*
++         * How many client TLS sessions to cache.  The default is
++         * SSL_SESSION_CACHE_MAX_SIZE_DEFAULT (20k in recent OpenSSL versions),
++         * which may be too small or too large.
++         */
++        SSL_CTX_sess_set_cache_size(ctx, 1024);
++    
++        /*
++         * Sessions older than this are considered a cache miss even if still in
++         * the cache.  The default is two hours.  Busy servers whose clients make
++         * many connections in a short burst may want a shorter timeout, on lightly
++         * loaded servers with sporadic connections from any given client, a longer
++         * time may be appropriate.
++         */
++        SSL_CTX_set_timeout(ctx, 3600);
++    }
+ 
+     /*
+      * Clients rarely employ certificate-based authentication, and so we don't
+@@ -206,6 +229,14 @@
+      */
+     SSL_CTX_set_verify(ctx, SSL_VERIFY_NONE, NULL);
+ 
++    if (kex_group != NULL) {
++        if (SSL_CTX_set1_groups_list(ctx, kex_group) != 1) {
++            SSL_CTX_free(ctx);
++            errx(res, "Failed to set key exchange group: %s\n", kex_group);
++        }
++        fprintf(stderr, "Using key exchange group: %s\n", kex_group);
++    }
++
+     /*
+      * Create a listener socket wrapped in a BIO.
+      * The first call to BIO_do_accept() initialises the socket
+@@ -228,10 +259,10 @@
+     for (;;) {
+         BIO *client_bio;
+         SSL *ssl;
+-        unsigned char buf[8192];
+-        size_t nread;
++        // unsigned char buf[8192];
++        // size_t nread;
+         size_t nwritten;
+-        size_t total = 0;
++        // size_t total = 0;
+ 
+         /* Pristine error stack for each new connection */
+         ERR_clear_error();
+@@ -263,6 +294,7 @@
+             continue;
+         }
+ 
++        /*
+         while (SSL_read_ex(ssl, buf, sizeof(buf), &nread) > 0) {
+             if (SSL_write_ex(ssl, buf, nread, &nwritten) > 0 &&
+                 nwritten == nread) {
+@@ -273,6 +305,17 @@
+             break;
+         }
+         fprintf(stderr, "Client connection closed, %zu bytes sent\n", total);
++        */
++        
++        if(!SSL_write_ex(ssl, "hello\n", 6, &nwritten)
++        || nwritten != 6){
++            warnx("Error writing on connection");
++        }
++
++        if (SSL_shutdown(ssl) != 1) {
++            warnx("Error shutting down connection");
++        }
++
+         SSL_free(ssl);
+     }
+ 
+--- openssl-clean/openssl-3.6.0-beta1/demos/quic/server/Makefile	2025-09-16 12:18:18.000000000 +0000
++++ /root/post-quantum-quick-standalone/openssl-openssl-3.6.0-beta1/demos/quic/server/Makefile	2026-05-19 10:19:25.747381007 +0000
+@@ -6,9 +6,10 @@
+ #    	../../../test/certs/servercert.pem \
+ #    	../../../test/certs/serverkey.pem
+ #
+-CFLAGS  += -I../../../include -g -Wall -Wsign-compare
+-LDFLAGS += -L../../..
+-LDLIBS  = -lcrypto -lssl
++OPENSSL_DIR=$(realpath ../../..)
++CFLAGS  += -I$(OPENSSL_DIR)/include -g -Wall -Wsign-compare
++LDFLAGS += -L$(OPENSSL_DIR)
++LDLIBS  = -lcrypto -lssl -Wl,-rpath,$(OPENSSL_DIR),--disable-new-dtags
+ 
+ .PHONY: all server clean run s_client
+ 
+--- openssl-clean/openssl-3.6.0-beta1/demos/quic/server/server.c	2025-09-16 12:18:18.000000000 +0000
++++ /root/post-quantum-quick-standalone/openssl-openssl-3.6.0-beta1/demos/quic/server/server.c	2026-05-19 10:19:25.751381036 +0000
+@@ -82,7 +82,7 @@
+     int fd = -1;
+     struct sockaddr_in sa = {0};
+ 
+-    if ((fd = (int)socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) {
++    if ((fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) {
+         fprintf(stderr, "cannot create socket");
+         goto err;
+     }
+@@ -125,9 +125,17 @@
+         ERR_print_errors_fp(stderr);
+         return 0;
+     }
++    // int ret2 = SSL_accept(conn);
++    // if (ret2 != 1) {
++    //     fprintf(stderr, "couldn't accept connection %d\n", ret2);
++    //     ERR_print_errors_fp(stderr);
++    //     return 0;
++    // }
+ 
+     /* Shut down the connection (blocking). */
+-    if (SSL_shutdown(conn) != 1) {
++    int ret = SSL_shutdown(conn);
++    if (ret != 1) {
++        fprintf(stderr, "Error on connection shutdown %d\n", ret);
+         ERR_print_errors_fp(stderr);
+         return 0;
+     }
+@@ -162,9 +170,11 @@
+     if (!SSL_set_blocking_mode(listener, 1))
+         goto err;
+ 
++    int cnt = 0;
+     for (;;) {
+         /* Blocking wait for an incoming connection, similar to accept(2). */
+         conn = SSL_accept_connection(listener, 0);
++        fprintf(stderr, "=> Accepted connection %d\n", ++cnt);
+         if (conn == NULL) {
+             fprintf(stderr, "error while accepting connection\n");
+             goto err;
+@@ -181,8 +191,10 @@
+          * accepted and serviced at a time.
+          */
+         if (!run_quic_conn(conn)) {
++            fprintf(stderr, "error while servicing connection\n");
+             SSL_free(conn);
+-            goto err;
++            // goto err;
++            continue;
+         }
+ 
+         /* Free the connection, then loop again, accepting another connection. */
+@@ -204,9 +216,10 @@
+     SSL_CTX *ctx = NULL;
+     int fd = -1;
+     unsigned long port;
++    const char *group = NULL;
+ 
+     if (argc < 4) {
+-        fprintf(stderr, "usage: %s <port> <server.crt> <server.key>\n", argv[0]);
++        fprintf(stderr, "usage: %s <port> <server.crt> <server.key> [group]\n", argv[0]);
+         goto err;
+     }
+ 
+@@ -214,6 +227,17 @@
+     if ((ctx = create_ctx(argv[2], argv[3])) == NULL)
+         goto err;
+ 
++    /* Optionally set key exchange group (e.g., ML-KEM) */
++    if (argc >= 5) {
++        group = argv[4];
++        // mlkem768:mlkem512:mlkem1024:P-256:P-384:P-521
++        if (SSL_CTX_set1_groups_list(ctx, group) != 1) {
++            fprintf(stderr, "Failed to set key exchange group: %s\n", group);
++            goto err;
++        }
++        fprintf(stderr, "Using key exchange group: %s\n", group);
++    }
++
+     /* Parse port number from command line arguments. */
+     port = strtoul(argv[1], NULL, 0);
+     if (port == 0 || port > UINT16_MAX) {
+--- openssl-clean/openssl-3.6.0-beta1/providers/implementations/signature/ml_dsa_sig.c.in	2025-09-16 12:18:18.000000000 +0000
++++ /root/post-quantum-quick-standalone/openssl-openssl-3.6.0-beta1/providers/implementations/signature/ml_dsa_sig.c.in	2026-05-19 10:19:28.519400714 +0000
+@@ -41,6 +41,12 @@
+ static OSSL_FUNC_signature_digest_sign_init_fn ml_dsa_digest_signverify_init;
+ static OSSL_FUNC_signature_digest_sign_fn ml_dsa_digest_sign;
+ static OSSL_FUNC_signature_digest_verify_fn ml_dsa_digest_verify;
++
++// // ============= EDITED =============
++// static OSSL_FUNC_signature_digest_verify_init_fn ml_dsa_digest_verify_init;
++// static OSSL_FUNC_signature_digest_verify_update_fn ml_dsa_digest_verify_update;
++static OSSL_FUNC_signature_digest_verify_final_fn ml_dsa_digest_verify_final;
++
+ static OSSL_FUNC_signature_freectx_fn ml_dsa_freectx;
+ static OSSL_FUNC_signature_set_ctx_params_fn ml_dsa_set_ctx_params;
+ static OSSL_FUNC_signature_settable_ctx_params_fn ml_dsa_settable_ctx_params;
+@@ -199,6 +205,9 @@
+ static int ml_dsa_digest_signverify_init(void *vctx, const char *mdname,
+                                          void *vkey, const OSSL_PARAM params[])
+ {
++    // ========== EDITED =========
++    // printf("In ml_dsa_digest_signverify_init\n");
++    // ==========================
+     PROV_ML_DSA_CTX *ctx = (PROV_ML_DSA_CTX *)vctx;
+ 
+     if (mdname != NULL && mdname[0] != '\0') {
+@@ -220,6 +229,9 @@
+                                         const unsigned char *data,
+                                         size_t datalen)
+ {
++    // ========== EDITED =========
++    // printf("In ml_dsa_signverify_msg_update\n");
++    // ==========================
+     PROV_ML_DSA_CTX *ctx = (PROV_ML_DSA_CTX *)vctx;
+ 
+     if (ctx == NULL)
+@@ -232,6 +244,8 @@
+         return 0;
+ 
+     if (ctx->md_ctx == NULL) {
++        // =========== EDITED =========
++        // printf("ml_dsa_signverify_msg_update Initializing context for digest\n");
+         ctx->md_ctx = ossl_ml_dsa_mu_init(ctx->key, ctx->msg_encode,
+                                           ctx->context_string,
+                                           ctx->context_string_len);
+@@ -239,12 +253,53 @@
+             return 0;
+     }
+ 
++    // printf("Updating digest with data of length %zu\n", datalen);
+     return ossl_ml_dsa_mu_update(ctx->md_ctx, data, datalen);
+ }
+ 
++int ml_dsa_digest_verify_final(void *vctx, const unsigned char *sig,
++                            size_t siglen)
++{
++    // printf("In ml_dsa_digest_verify_final\n");
++    PROV_ML_DSA_CTX *ctx = (PROV_ML_DSA_CTX *)vctx;
++
++    if (ctx == NULL)
++        return 0;
++
++    // TODO: Use params
++    /* Use ml_dsa_set_ctx_params to copy the signature into the context so
++     * ownership and lifetime are handled consistently.  The existing
++     * ml_dsa_set_ctx_params only accepts the signature when
++     * ctx->operation == EVP_PKEY_OP_VERIFYMSG, so temporarily set that
++     * operation while calling it. */
++    {
++        int oldop = ctx->operation;
++        OSSL_PARAM params[] = {
++            OSSL_PARAM_octet_string(OSSL_SIGNATURE_PARAM_SIGNATURE,
++                                    (void *)sig, siglen),
++            OSSL_PARAM_END
++        };
++
++        ctx->operation = EVP_PKEY_OP_VERIFYMSG;
++        if (!ml_dsa_set_ctx_params(ctx, params)) {
++            ctx->operation = oldop;
++            return 0;
++        }
++        ctx->operation = oldop;
++    }
++
++    return ml_dsa_verify_msg_final(ctx);
++}
++
++
++
++
+ static int ml_dsa_sign_msg_final(void *vctx, unsigned char *sig,
+                                  size_t *siglen, size_t sigsize)
+-{
++{   
++    // ========== EDITED =========
++    // printf("In ml_dsa_sign_msg_final\n");
++    // ==========================
+     PROV_ML_DSA_CTX *ctx = (PROV_ML_DSA_CTX *)vctx;
+     uint8_t rand_tmp[ML_DSA_ENTROPY_LEN], *rnd = NULL;
+     uint8_t mu[ML_DSA_MU_BYTES];
+@@ -327,6 +382,9 @@
+ 
+ static int ml_dsa_verify_msg_final(void *vctx)
+ {
++    // ========== EDITED =========
++    // printf("In ml_dsa_verify_msg_final\n");
++    // ==========================
+     PROV_ML_DSA_CTX *ctx = (PROV_ML_DSA_CTX *)vctx;
+     uint8_t mu[ML_DSA_MU_BYTES];
+ 
+@@ -336,8 +394,24 @@
+     if (ctx->md_ctx == NULL)
+         return 0;
+ 
+-    if (!ossl_ml_dsa_mu_finalize(ctx->md_ctx, mu, sizeof(mu)))
+-        return 0;
++
++    if (!ossl_ml_dsa_mu_finalize(ctx->md_ctx, mu, sizeof(mu))) {
++        // =========== EDITED =========
++        printf("ml_dsa_verify_msg_final: failed to finalize hash\n");
++        return 0;
++    }
++    
++    // =========== EDITED =========
++    //printf("Verifying hash mu: ");
++    //for (size_t i = 0; i < sizeof(mu); i++) {
++    //    printf("%02x", mu[i]);
++    //}
++    //printf("\n");
++    
++    //printf("sig: ");
++    //for (size_t i = 0; i < ctx->siglen; i++)
++    //    printf("%02x", ctx->sig[i]);
++    //printf("\n");
+ 
+     return ossl_ml_dsa_verify(ctx->key, 1, mu, sizeof(mu), NULL, 0, 0,
+                               ctx->sig, ctx->siglen);
+@@ -504,6 +578,10 @@
+           (void (*)(void))ml_dsa_digest_sign },                                \
+         { OSSL_FUNC_SIGNATURE_DIGEST_VERIFY_INIT,                              \
+           (void (*)(void))ml_dsa_digest_signverify_init },                     \
++        { OSSL_FUNC_SIGNATURE_DIGEST_VERIFY_UPDATE,                    /* ============ EDITED ============= */ \
++        (void (*)(void))ml_dsa_signverify_msg_update },                  \
++        { OSSL_FUNC_SIGNATURE_DIGEST_VERIFY_FINAL,                      \
++        (void (*)(void))ml_dsa_digest_verify_final },                      \
+         { OSSL_FUNC_SIGNATURE_DIGEST_VERIFY,                                   \
+           (void (*)(void))ml_dsa_digest_verify },                              \
+         { OSSL_FUNC_SIGNATURE_FREECTX, (void (*)(void))ml_dsa_freectx },       \
+--- openssl-clean/openssl-3.6.0-beta1/ssl/quic/quic_channel.c	2025-09-16 12:18:18.000000000 +0000
++++ /root/post-quantum-quick-standalone/openssl-openssl-3.6.0-beta1/ssl/quic/quic_channel.c	2026-05-19 10:19:28.739402278 +0000
+@@ -24,8 +24,8 @@
+ #include "quic_port_local.h"
+ #include "quic_engine_local.h"
+ 
+-#define INIT_CRYPTO_RECV_BUF_LEN    16384
+-#define INIT_CRYPTO_SEND_BUF_LEN    16384
++#define INIT_CRYPTO_RECV_BUF_LEN    32768
++#define INIT_CRYPTO_SEND_BUF_LEN    32768
+ #define INIT_APP_BUF_LEN             8192
+ 
+ /*

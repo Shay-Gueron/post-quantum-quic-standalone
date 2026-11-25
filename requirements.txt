@@ -1,0 +1,11 @@
+# Core experiment pipeline (code/experiments, code/certs)
+tqdm>=4.60
+cryptography>=42
+pyasn1>=0.4.8
+
+# Optional: only needed by code/certs/ct_config_generator/create_config.sh,
+# which regenerates the CT log list config from Chrome's published log list.
+# That script also downloads print_log_list.py, needs network access, and
+# expects a `python` (not just `python3`) executable on PATH.
+absl-py>=1.0
+jsonschema>=4.0

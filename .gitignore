@@ -1,0 +1,2 @@
+# OpenSSL source tarball: build_openssl.sh downloads it from openssl.org
+openssl_patch/download/

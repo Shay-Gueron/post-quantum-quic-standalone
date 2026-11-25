@@ -1,0 +1,12 @@
+venv/
+*.o
+*.key
+__pycache__/
+*.crt
+*.csr
+*.cnf
+*.pem
+*.bin
+ct/
+root/
+sub/

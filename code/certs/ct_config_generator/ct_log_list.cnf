@@ -1,0 +1,169 @@
+enabled_logs = https_//ct.googleapis.com/logs/us1/argon2025h2/, https_//ct.googleapis.com/logs/us1/argon2026h1/, https_//ct.googleapis.com/logs/us1/argon2026h2/, https_//ct.googleapis.com/logs/eu1/xenon2025h2/, https_//ct.googleapis.com/logs/eu1/xenon2026h1/, https_//ct.googleapis.com/logs/eu1/xenon2026h2/, https_//ct.cloudflare.com/logs/nimbus2025/, https_//ct.cloudflare.com/logs/nimbus2026/, https_//ct.cloudflare.com/logs/nimbus2027/, https_//yeti2025.ct.digicert.com/log/, https_//nessie2025.ct.digicert.com/log/, https_//wyvern.ct.digicert.com/2025h2/, https_//wyvern.ct.digicert.com/2026h1/, https_//wyvern.ct.digicert.com/2026h2/, https_//sphinx.ct.digicert.com/2025h2/, https_//sphinx.ct.digicert.com/2026h1/, https_//sphinx.ct.digicert.com/2026h2/, https_//sabre2025h2.ct.sectigo.com/, https_//mammoth2025h2.ct.sectigo.com/, https_//mammoth2026h1.ct.sectigo.com/, https_//mammoth2026h2.ct.sectigo.com/, https_//sabre2026h1.ct.sectigo.com/, https_//sabre2026h2.ct.sectigo.com/, https_//elephant2025h2.ct.sectigo.com/, https_//elephant2026h1.ct.sectigo.com/, https_//elephant2026h2.ct.sectigo.com/, https_//elephant2027h1.ct.sectigo.com/, https_//elephant2027h2.ct.sectigo.com/, https_//tiger2025h2.ct.sectigo.com/, https_//tiger2026h1.ct.sectigo.com/, https_//tiger2026h2.ct.sectigo.com/, https_//tiger2027h1.ct.sectigo.com/, https_//tiger2027h2.ct.sectigo.com/, https_//oak.ct.letsencrypt.org/2025h2/, https_//oak.ct.letsencrypt.org/2026h1/, https_//oak.ct.letsencrypt.org/2026h2/, https_//ct2025-a.trustasia.com/log2025a/, https_//ct2025-b.trustasia.com/log2025b/, https_//ct2026-a.trustasia.com/log2026a/, https_//ct2026-b.trustasia.com/log2026b/, https_//ct.example.com/bogus/, https_//ct.example.com/bogus/ipng/
+
+[https_//ct.googleapis.com/logs/us1/argon2025h2/]
+description = Google 'Argon2025h2' log
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEr+TzlCzfpie1/rJhgxnIITojqKk9VK+8MZoc08HjtsLzD8e5yjsdeWVhIiWCVk6Y6KomKTYeKGBv6xVu93zQug==
+
+[https_//ct.googleapis.com/logs/us1/argon2026h1/]
+description = Google 'Argon2026h1' log
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEB/we6GOO/xwxivy4HhkrYFAAPo6e2nc346Wo2o2U+GvoPWSPJz91s/xrEvA3Bk9kWHUUXVZS5morFEzsgdHqPg==
+
+[https_//ct.googleapis.com/logs/us1/argon2026h2/]
+description = Google 'Argon2026h2' log
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEKjpni/66DIYrSlGK6Rf+e6F2c/28ZUvDJ79N81+gyimAESAyeNZ++TRgjHWg9TVQnKHTSU0T1TtqDupFnSQTIg==
+
+[https_//ct.googleapis.com/logs/eu1/xenon2025h2/]
+description = Google 'Xenon2025h2' log
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEa+Cv7QZ8Pe/ZDuRYSwTYKkeZkIl6uTaldcgEuMviqiu1aJ2IKaKlz84rmhWboD6dlByyt0ryUexA7WJHpANJhg==
+
+[https_//ct.googleapis.com/logs/eu1/xenon2026h1/]
+description = Google 'Xenon2026h1' log
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEOh/Iu87VkEc0ysoBBCchHOIpPZK7kUXHWj6l1PIS5ujmQ7rze8I4r/wjigVW6wMKMMxjbNk8vvV7lLqU07+ITA==
+
+[https_//ct.googleapis.com/logs/eu1/xenon2026h2/]
+description = Google 'Xenon2026h2' log
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE5Xd4lXEos5XJpcx6TOgyA5Z7/C4duaTbQ6C9aXL5Rbqaw+mW1XDnDX7JlRUninIwZYZDU9wRRBhJmCVopzwFvw==
+
+[https_//ct.cloudflare.com/logs/nimbus2025/]
+description = Cloudflare 'Nimbus2025'
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEGoAaFRkZI3m0+qB5jo3VwdzCtZaSfpTgw34UfAoNLUaonRuxQWUMX5jEWhd5gVtKFEHsr6ldDqsSGXHNQ++7lw==
+
+[https_//ct.cloudflare.com/logs/nimbus2026/]
+description = Cloudflare 'Nimbus2026'
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE2FxhT6xq0iCATopC9gStS9SxHHmOKTLeaVNZ661488Aq8tARXQV+6+jB0983v5FkRm4OJxPqu29GJ1iG70Ahow==
+
+[https_//ct.cloudflare.com/logs/nimbus2027/]
+description = Cloudflare 'Nimbus2027'
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEYjd/jE0EoAhNBbfcNhrTb7F0x10KZK8r2SDjx1GdjJ75hJrHx2OCQ+BXRjXi+czoREN1u0j9cWl8d6OoPMPogQ==
+
+[https_//yeti2025.ct.digicert.com/log/]
+description = DigiCert Yeti2025 Log
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE35UAXhDBAfc34xB00f+yypDtMplfDDn+odETEazRs3OTIMITPEy1elKGhj3jlSR82JGYSDvw8N8h8bCBWlklQw==
+
+[https_//nessie2025.ct.digicert.com/log/]
+description = DigiCert Nessie2025 Log
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE8vDwp4uBLgk5O59C2jhEX7TM7Ta72EN/FklXhwR/pQE09+hoP7d4H2BmLWeadYC3U6eF1byrRwZV27XfiKFvOA==
+
+[https_//wyvern.ct.digicert.com/2025h2/]
+description = DigiCert 'Wyvern2025h2' Log
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE4NtB7+QEvctrLkzM8WzeQVh//pT2evZg7Yt2cqOiHDETMjWh8gjSaMU0p1YIHGPeleKBaZeNHqi3ZlEldU14Lg==
+
+[https_//wyvern.ct.digicert.com/2026h1/]
+description = DigiCert 'Wyvern2026h1'
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE7Lw0OeKajbeZepHxBXJS2pOJXToHi5ntgKUW2nMhIOuGlofFxtkXum65TBNY1dGD+HrfHge8Fc3ASs0qMXEHVQ==
+
+[https_//wyvern.ct.digicert.com/2026h2/]
+description = DigiCert 'Wyvern2026h2'
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEenPbSvLeT+zhFBu+pqk8IbhFEs16iCaRIFb1STLDdWzL6XwTdTWcbOzxMTzB3puME5K3rT0PoZyPSM50JxgjmQ==
+
+[https_//sphinx.ct.digicert.com/2025h2/]
+description = DigiCert 'Sphinx2025h2' Log
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEQYxQE1SxGQW3f0ogbqN1Y8o09Mx06jI7tosDFKhSfzKHXlmeD6sYnilstXJ3GidUhV3BeySoNOPNiM7UUBu+aQ==
+
+[https_//sphinx.ct.digicert.com/2026h1/]
+description = DigiCert 'Sphinx2026h1'
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEq4S++DyHokIlmmacritS51r5IRsZA6UH4kYLH4pefGyu/xl3huh7/O5rNk/yvMOeBQKaCAG1SSM1xNNQK1Hp9A==
+
+[https_//sphinx.ct.digicert.com/2026h2/]
+description = DigiCert 'Sphinx2026h2'
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEquD0JkRQT/2inuaA4HC1sc6UpfiXgURVQmQcInmnZFnTiZMhZvsJgWAfYlU0OIykOC6slQzr7U9kvEVC9wZ6zQ==
+
+[https_//sabre2025h2.ct.sectigo.com/]
+description = Sectigo 'Sabre2025h2'
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEhRMRLXvzk4HkuXzZZDvntYOZZnlZR2pCXta9Yy63kUuuvFbExW4JoNdkGsjBr4mL9VjYuut7g1Lp9OClzc2SzA==
+
+[https_//mammoth2025h2.ct.sectigo.com/]
+description = Sectigo 'Mammoth2025h2'
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEiOLHs9c3o5HXs8XaB1EEK4HtwkQ7daDmZeFKuhuxnKkqhDEprh2L8TOfEi6QsRVnZqB8C1tif2yaajCbaAIWbw==
+
+[https_//mammoth2026h1.ct.sectigo.com/]
+description = Sectigo 'Mammoth2026h1'
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEnssMilHMiuILzoXmr00x2xtqTP2weWuZl8Bd+25FUB1iqsafm2sFPaKrK12Im1Ao4p5YpaX6+eP6FSXjFBMyxA==
+
+[https_//mammoth2026h2.ct.sectigo.com/]
+description = Sectigo 'Mammoth2026h2'
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE7INh8te0u+TkO+vIY3WYz2GQYxQ9XyLfdLpQp1ibaX3mY4lt2ddRhD/4AtjI/8KXceV+J/VysY8kJ1cKDXTAtg==
+
+[https_//sabre2026h1.ct.sectigo.com/]
+description = Sectigo 'Sabre2026h1'
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEhCa8Nr3YjTyHnuAQr82U2de5UYA0fvdYXHPq6wmTuBB7kJx9x82WQ+1TbpUhRmdR8N62yZ6q4oBtziWBNNdqYA==
+
+[https_//sabre2026h2.ct.sectigo.com/]
+description = Sectigo 'Sabre2026h2'
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEzjXK7DkHgtp3J4bk8n7F3Djym6mrjKfA7YMePmobwPCVVroyM0x1fAkH6eE+ZTVj8Em+ctGqna99CMS0jVk9cw==
+
+[https_//elephant2025h2.ct.sectigo.com/]
+description = Sectigo 'Elephant2025h2'
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE0OlLeGW2qUZGUoQERydw3GlayEO3ZK3418zThY1tDYr85ASme6ZOL/2DXyOXw8RCwVsKhRbOqMEOxW4Q2p4KQg==
+
+[https_//elephant2026h1.ct.sectigo.com/]
+description = Sectigo 'Elephant2026h1'
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEU0lqnPHoXuU9Fc9dJv1HQZCvssJfvxLsirwVQ/fkFyUqeu4inwPKikeT4DGyyWWH4NR/DCJa2bAumHrXJdAcaQ==
+
+[https_//elephant2026h2.ct.sectigo.com/]
+description = Sectigo 'Elephant2026h2'
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEO/t4Uwkoou78zkCchh9tfAKbIUJmbOoUAb8szD8StnnHFKAVY5kq1Ljs8YD7CfzdD7xcVjmQYpbtNUhxRMRtmA==
+
+[https_//elephant2027h1.ct.sectigo.com/]
+description = Sectigo 'Elephant2027h1'
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE4fu36JygUwaaVO+ddWJ97FJZlA5SjPLmT+RHwg0pavkIrbT1b5LNQrsaEw0CoGraf7BkzKZf7PC8gYAScw2woA==
+
+[https_//elephant2027h2.ct.sectigo.com/]
+description = Sectigo 'Elephant2027h2'
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAECTPhpJnRFroRRpP/1DdAns+PrnmUywtqIV+EeL4Jg8zKouoW7kuAkYo+kZeoHtyK7CBhflIlMk7T2Qrn4w/t8g==
+
+[https_//tiger2025h2.ct.sectigo.com/]
+description = Sectigo 'Tiger2025h2'
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEFUl5keBbWVckXMv6WSWToTeGwi9DSNCI2WZlIENBkA/zADmmS58w33/f0JhC2KEkWS+4T7/bYOXv4dDNzzrExg==
+
+[https_//tiger2026h1.ct.sectigo.com/]
+description = Sectigo 'Tiger2026h1'
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE73eDJyszDbzsWcgI0nbtU0+y11gQWjNjS/RSO5P4hOSFE+pPrDCtfNPHe6dq7/XQYwOFt9Feb8TwQW+mqXN5xg==
+
+[https_//tiger2026h2.ct.sectigo.com/]
+description = Sectigo 'Tiger2026h2'
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEfJFUD/FRkonvZIA9ZT1J3yvA4EpSp3innbIVpMTDR1oCe5vguapheQ7wYiWaCES1EL1B+2BEC+P5bUfwF44lnA==
+
+[https_//tiger2027h1.ct.sectigo.com/]
+description = Sectigo 'Tiger2027h1'
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEmMQofpsDjCVYzF4jXdFWM/ioYBJIPcsQQrNAHE6v4lOsADoI+/jN1lph8x4K3NgnXDXwmyJcFwRYgVOBMhaYhA==
+
+[https_//tiger2027h2.ct.sectigo.com/]
+description = Sectigo 'Tiger2027h2'
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEb0AgkemhsPmYe1goCSy5ncf2lG9vtK6f+SzODKJMYEgPOT+z93cUEKM1EaTuo09rozfdqhjeihIl25y9A3JhyQ==
+
+[https_//oak.ct.letsencrypt.org/2025h2/]
+description = Let's Encrypt 'Oak2025h2'
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEtXYwB63GyNLkS9L1vqKNnP10+jrW+lldthxg090fY4eG40Xg1RvANWqrJ5GVydc9u8H3cYZp9LNfkAmqrr2NqQ==
+
+[https_//oak.ct.letsencrypt.org/2026h1/]
+description = Let's Encrypt 'Oak2026h1'
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEmdRhcCL6d5MNs8eAliJRvyV5sQFC6UF7iwzHsmVaifT64gJG1IrHzBAHESdFSJAjQN56TYky+9cK616MovH2SQ==
+
+[https_//oak.ct.letsencrypt.org/2026h2/]
+description = Let's Encrypt 'Oak2026h2'
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEanCds5bj7IU2lcNPnIvZfMnVkSmu69aH3AS8O/Y0D/bbCPdSqYjvuz9Z1tT29PxcqYxf+w1g5CwPFuwqsm3rFQ==
+
+[https_//ct2025-a.trustasia.com/log2025a/]
+description = TrustAsia Log2025a
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEcOWxpAl5K534o6DfGO+VXQNse6GRqbiAfexcAgjibi98MnC9loRfpmLpZbV8kFi6ItX59WlUt6iUTjIJriYRTQ==
+
+[https_//ct2025-b.trustasia.com/log2025b/]
+description = TrustAsia Log2025b
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEqqCL22cUXZeJHQiNBtfBlI6w+kxG1VMIeCsEU2zz3rHRU0DakFfmGp48xwO4vS+pz+h7XuFLYOU4Q2CXwVsvZQ==
+
+[https_//ct2026-a.trustasia.com/log2026a/]
+description = TrustAsia 'log2026a'
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEp056yaYH+f907JjLSeEAJLNZLoP9wHA1M0xjynSDwDxbU0B8MR81pF8P5O5PiRfoWy7FrAAFyXY3RZcDFf9gWQ==
+
+[https_//ct2026-b.trustasia.com/log2026b/]
+description = TrustAsia 'log2026b'
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEDxKMqebj7GLu31jIUOYmcHYQtwQ5s6f4THM7wzhaEgBM4NoOFopFMgoxqiLHnX0FU8eelOqbV0a/T6R++9/6hQ==
+
+[https_//ct.example.com/bogus/]
+description = Bogus placeholder log to unbreak misbehaving CT libraries
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEj4lCAxWCY6SzIthkqZhwiUVzcK62i6Fc+/YS0WHaN6jjO1ITUFuu8beOiU9PdeNmdalZcC3iWovAfApvXS33Nw==
+
+[https_//ct.example.com/bogus/ipng/]
+description = Bogus RFC6962 log to avoid breaking misbehaving CT libraries
+key = MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAELzNWh+BsAk0HnEEE7Zk1bAhdH1SM5udo1+CTF6LGcL6AVVIXSuOF95/Wg0qLZV491QbrNRg06mM6KwEzDXXtqg==
