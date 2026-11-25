@@ -124,3 +124,17 @@ All results are stored in the `results/` directory, timestamped and categorized 
 
 ---
 **Note:** The framework uses Linux network namespaces for isolation. Do not run other network-sensitive tasks while experiments are active.
+
+## Author
+
+Shay Gueron, University of Haifa.
+
+## License
+
+Copyright 2026 Shay Gueron, University of Haifa.
+Licensed under the Apache License, Version 2.0 (see [LICENSE](LICENSE)).
+Third-party code keeps its own copyright and license (see [NOTICE](NOTICE)).
+
+## Acknowledgements
+
+This work was supported by the Israel Innovation Authority, Technological Infrastructure Division, as part of the Post-Quantum Communications (PQC) Consortium.

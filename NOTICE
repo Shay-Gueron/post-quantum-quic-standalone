@@ -1,0 +1,21 @@
+post-quantum-quic-standalone
+Copyright 2026 Shay Gueron, University of Haifa
+
+This product is licensed under the Apache License, Version 2.0
+(see the LICENSE file).
+
+This product includes third-party code under its own copyright:
+
+  code/client_server/*.c
+    Derived from OpenSSL. Copyright The OpenSSL Project Authors.
+    Licensed under the Apache License 2.0.
+    https://www.openssl.org/source/license.html
+
+  openssl_patch/openssl-3.6.0-beta1.patch
+    A patch to OpenSSL 3.6.0-beta1 (Apache License 2.0).
+
+  code/certs/ct_config_generator/
+    Derived from the Google certificate-transparency project.
+    Copyright The Chromium Authors and The Android Open Source Project.
+    Licensed under the Apache License 2.0 and a BSD-style license,
+    as stated in each file.
